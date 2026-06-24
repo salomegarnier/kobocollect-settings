@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KoboCollect Project Settings Generator</title>
+  <style>
+    :root {
+      --bg: #F0F4FA;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d8dee9;
+      --primary: #1B6DB5;
+      --primary-dark: #14578f;
+      --soft-primary: #eaf4ff;
+      --warning-bg: #fff8e6;
+      --warning-border: #f5c542;
+      --success-bg: #eafaf1;
+      --success-border: #2ca66a;
+      --info-bg: #eef7ff;
+      --info-border: #7ab8e8;
+      --shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1B6DB5, #14578f);
+      color: white;
+      padding: 3rem 1.5rem;
+    }
+
+    header .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+    }
+
+    header p {
+      margin: 0;
+      max-width: 760px;
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    main {
+      max-width: 980px;
+      margin: -2rem auto 4rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      background: #fbfcfe;
+    }
+
+    .mini-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .question {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    legend {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: -0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    label.option {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+      padding: 0.75rem;
+      margin: 0.45rem 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    label.option:hover {
+      border-color: var(--primary);
+      background: var(--soft-primary);
+    }
+
+    input[type="radio"] {
+      margin-top: 0.2rem;
+      accent-color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .result-actions {
+      margin-bottom: 2.25rem;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    button.primary:hover { background: var(--primary-dark); }
+
+    button.secondary {
+      background: #eef2f7;
+      color: var(--text);
+    }
+
+    button.secondary:hover { background: #e1e7f0; }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .hidden { display: none !important; }
+
+    .summary {
+      background: var(--card);
+      border: 0;
+      border-radius: 14px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .summary h3 { margin-top: 0; }
+
+    .summary ul { margin-bottom: 0; }
+
+    .notice {
+      border-radius: 14px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .notice.warning {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+    }
+
+    .notice.success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+    }
+
+    .notice.info {
+      background: var(--info-bg);
+      border: 1px solid var(--info-border);
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .instructions h3 {
+      margin-top: 1.4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .instructions h4 {
+      margin-bottom: 0.45rem;
+    }
+
+    .instructions ol,
+    .instructions ul {
+      padding-left: 1.3rem;
+    }
+
+    .instructions li { margin: 0.35rem 0; }
+
+    .instructions p { margin: 0.6rem 0; }
+
+    .instructions .section { margin-bottom: 1.1rem; }
+
+    .recommendation-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1rem;
+      overflow-wrap: anywhere;
+    }
+
+    .recommendation-table th,
+    .recommendation-table td {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .recommendation-table th {
+      background: #f7f9fc;
+      width: 30%;
+    }
+
+    a {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .copied {
+      color: #166534;
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
+
+    footer {
+      max-width: 980px;
+      margin: 0 auto 3rem;
+      padding: 0 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media print {
+      header,
+      .quiz-card,
+      .actions,
+      footer,
+      .intro-card,
+      .learn-more-card {
+        display: none !important;
+      }
+
+      main {
+        margin: 0;
+        max-width: none;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 0;
+      }
+
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>KoboCollect Project Settings Generator</h1>
+      <p>
+        Answer a few questions about your data collection workflow. This tool will generate recommended KoboCollect settings for project administrators, including what to enable and where to enable it.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card intro-card">
+      <h2>How to use this tool</h2>
+      <div class="intro-grid">
+        <div class="mini-card">
+          <strong>Step 1</strong>
+          Answer the questions about your project and field workflow.
+        </div>
+        <div class="mini-card">
+          <strong>Step 2</strong>
+          Review the recommended KoboCollect settings.
+        </div>
+        <div class="mini-card">
+          <strong>Step 3</strong>
+          Apply the settings on each data collection device, or configure one device and share the setup by QR code.
+        </div>
+      </div>
+    </section>
+
+    <section class="card quiz-card">
+      <h2>Project administrator questions</h2>
+
+      <form id="settingsForm">
+        <div class="question">
+          <fieldset>
+            <legend>Do you anticipate frequent changes to your data collection form during the project?</legend>
+            <label class="option">
+              <input type="radio" name="frequentChanges" value="yes" required />
+              <span>Yes, the form may be updated regularly during data collection.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="frequentChanges" value="no" />
+              <span>No, the form will remain mostly unchanged after deployment.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="frequentChanges" value="notSure" />
+              <span>Not sure.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Are you using dynamic data attachments in your form?</legend>
+            <label class="option">
+              <input type="radio" name="dynamicAttachments" value="yes" required />
+              <span>Yes, the form uses dynamic data attachments.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="dynamicAttachments" value="no" />
+              <span>No, the form does not use dynamic data attachments.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="dynamicAttachments" value="notSure" />
+              <span>Not sure.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div id="batteryQuestion" class="question hidden">
+          <fieldset>
+            <legend>Are you concerned about device battery life?</legend>
+            <p class="hint">For example, devices with limited battery capacity or long periods in the field without charging.</p>
+            <label class="option">
+              <input type="radio" name="batteryConcern" value="yes" />
+              <span>Yes, battery life is a concern.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="batteryConcern" value="no" />
+              <span>No, battery life is not a concern.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div id="allFormsQuestion" class="question hidden">
+          <fieldset>
+            <legend>Do you want all forms shared with the account to be downloaded to the device automatically?</legend>
+            <label class="option">
+              <input type="radio" name="allForms" value="yes" />
+              <span>Yes, every form shared with the account should be automatically downloaded and updated when changes are made.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="allForms" value="no" />
+              <span>No, some forms shared with the account are not relevant for the project and should not be downloaded to the device.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div id="automaticDownloadQuestion" class="question hidden">
+          <fieldset>
+            <legend>For forms that have been downloaded to your device, do you want updated versions to download automatically?</legend>
+            <label class="option">
+              <input type="radio" name="automaticDownload" value="yes" />
+              <span>Yes, download updates automatically.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="automaticDownload" value="no" />
+              <span>No, only notify users when updates are available.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Do you want finalized forms to be sent automatically when the device has internet access?</legend>
+            <label class="option">
+              <input type="radio" name="autoSend" value="wifiOrCellular" required />
+              <span>Yes, send automatically over Wi-Fi or mobile data.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="autoSend" value="wifiOnly" />
+              <span>Yes, but only over Wi-Fi.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="autoSend" value="cellularOnly" />
+              <span>Yes, but only over mobile data.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="autoSend" value="off" />
+              <span>No, enumerators or supervisors should send finalized forms manually.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Do you want submitted forms and media to be deleted from the device after they are successfully sent?</legend>
+            <p class="hint">Removing submitted data can help save space on your device and protect data privacy.</p>
+            <label class="option">
+              <input type="radio" name="deleteAfterSend" value="yes" required />
+              <span>Yes, remove submitted data from the device after upload.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="deleteAfterSend" value="no" />
+              <span>No, keep submitted data on the device for future reference.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Do you want the KoboCollect app interface to use a specific language?</legend>
+            <label class="option">
+              <input type="radio" name="specificLanguage" value="yes" required />
+              <span>Yes, set the app interface language.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="specificLanguage" value="no" />
+              <span>No, use the device language.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Do you want to prevent enumerators from deleting forms from KoboCollect?</legend>
+            <p class="hint">If enumerators accidentally delete a data collection form while offline, they will not be able to redownload the form until the device has internet access.</p>
+            <label class="option">
+              <input type="radio" name="preventDeleteForms" value="yes" required />
+              <span>Yes, enumerators should not be able to delete forms.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="preventDeleteForms" value="no" />
+              <span>No, enumerators can keep access to the Delete form option.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="question">
+          <fieldset>
+            <legend>Do you want to prevent enumerators from changing project settings?</legend>
+            <label class="option">
+              <input type="radio" name="restrictSettings" value="yes" required />
+              <span>Yes, settings should be restricted to project administrators only.</span>
+            </label>
+            <label class="option">
+              <input type="radio" name="restrictSettings" value="no" />
+              <span>No, enumerators can access and modify settings.</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Generate settings</button>
+          <button type="button" id="resetButton" class="secondary">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="summaryCard" class="card hidden">
+      <div id="summary" class="summary"></div>
+    </section>
+
+    <section id="resultCard" class="card hidden">
+      <div class="actions result-actions">
+        <button type="button" id="copyButton" class="primary">Copy recommendations</button>
+        <button type="button" id="printButton" class="secondary">Print recommendations</button>
+        <span id="copyStatus" class="copied hidden">Copied!</span>
+      </div>
+
+      <article id="recommendationsOutput" class="instructions"></article>
+    </section>
+
+    <section class="card learn-more-card">
+      <h2>Learn more</h2>
+      <p>For additional guidance on configuring KoboCollect, see:</p>
+      <ul>
+        <li>
+          <a href="https://support.kobotoolbox.org/kobocollect_settings.html" target="_blank" rel="noopener noreferrer">Customizing KoboCollect settings</a>
+          – Learn about user interface settings, form management settings, access control, and admin passwords.
+        </li>
+        <li>
+          <a href="https://support.kobotoolbox.org/kobocollect_settings.html#form-management-settings" target="_blank" rel="noopener noreferrer">Form management settings</a>
+          – Learn about blank form update mode, automatic download, auto send, and delete after send.
+        </li>
+        <li>
+          <a href="https://support.kobotoolbox.org/kobocollect_settings.html#access-control" target="_blank" rel="noopener noreferrer">Access control</a>
+          – Learn how to restrict parts of the KoboCollect interface for different user roles.
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    This tool provides general recommendations. Always test your KoboCollect configuration before starting field data collection.
+  </footer>
+
+  <script>
+    const LABELS = {
+      frequentChanges: {
+        yes: "Yes, the form may be updated regularly during data collection",
+        no: "No, the form will remain mostly unchanged after deployment",
+        notSure: "Not sure"
+      },
+      dynamicAttachments: {
+        yes: "Yes, the form uses dynamic data attachments",
+        no: "No, the form does not use dynamic data attachments",
+        notSure: "Not sure"
+      },
+      batteryConcern: {
+        yes: "Yes, battery life is a concern",
+        no: "No, battery life is not a concern",
+        notApplicable: "Not applicable"
+      },
+      allForms: {
+        yes: "Yes, download every form shared with the account",
+        no: "No, only use forms that are relevant for this project",
+        notApplicable: "Not applicable"
+      },
+      automaticDownload: {
+        yes: "Yes, download updates automatically",
+        no: "No, only notify users when updates are available",
+        notApplicable: "Not applicable"
+      },
+      autoSend: {
+        wifiOrCellular: "Wi-Fi or cellular",
+        wifiOnly: "Wi-Fi only",
+        cellularOnly: "Cellular only",
+        off: "Off"
+      },
+      deleteAfterSend: {
+        yes: "Enabled",
+        no: "Disabled"
+      },
+      specificLanguage: {
+        yes: "Set a specific app interface language",
+        no: "Use the device language"
+      },
+      preventDeleteForms: {
+        yes: "Hide or disable Delete form",
+        no: "Leave Delete form visible"
+      },
+      restrictSettings: {
+        yes: "Restrict settings to project administrators",
+        no: "Leave settings accessible"
+      }
+    };
+
+    function getSelectedValue(form, name) {
+      const selected = form.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.value : null;
+    }
+
+    function setRequiredForGroup(name, isRequired) {
+      document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+        input.required = isRequired;
+      });
+    }
+
+    function clearRadioGroup(name) {
+      document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+        input.checked = false;
+      });
+    }
+
+    function needsAutomaticUpdates(settings) {
+      return settings.frequentChanges === "yes" || settings.frequentChanges === "notSure" || settings.dynamicAttachments === "yes";
+    }
+
+    function shouldShowUpdateFollowUps() {
+      const form = document.getElementById("settingsForm");
+      const settings = {
+        frequentChanges: getSelectedValue(form, "frequentChanges"),
+        dynamicAttachments: getSelectedValue(form, "dynamicAttachments")
+      };
+      return settings.frequentChanges === "yes" || settings.frequentChanges === "notSure" || settings.dynamicAttachments === "yes";
+    }
+
+    function updateConditionalQuestions() {
+      const form = document.getElementById("settingsForm");
+      const showUpdateQuestions = shouldShowUpdateFollowUps();
+      const batteryQuestion = document.getElementById("batteryQuestion");
+      const allFormsQuestion = document.getElementById("allFormsQuestion");
+      const automaticDownloadQuestion = document.getElementById("automaticDownloadQuestion");
+      const allForms = getSelectedValue(form, "allForms");
+
+      batteryQuestion.classList.toggle("hidden", !showUpdateQuestions);
+      allFormsQuestion.classList.toggle("hidden", !showUpdateQuestions);
+
+      setRequiredForGroup("batteryConcern", showUpdateQuestions);
+      setRequiredForGroup("allForms", showUpdateQuestions);
+
+      if (!showUpdateQuestions) {
+        clearRadioGroup("batteryConcern");
+        clearRadioGroup("allForms");
+        clearRadioGroup("automaticDownload");
+        automaticDownloadQuestion.classList.add("hidden");
+        setRequiredForGroup("automaticDownload", false);
+        return;
+      }
+
+      const showAutomaticDownload = allForms === "no";
+      automaticDownloadQuestion.classList.toggle("hidden", !showAutomaticDownload);
+      setRequiredForGroup("automaticDownload", showAutomaticDownload);
+
+      if (!showAutomaticDownload) {
+        clearRadioGroup("automaticDownload");
+      }
+    }
+
+    function determineRecommendations(settings) {
+      const autoUpdatesNeeded = needsAutomaticUpdates(settings);
+      let blankFormUpdateMode = "Manual";
+      let automaticDownload = "Not applicable";
+      let automaticUpdateFrequency = "Not applicable";
+      const notes = [];
+      const warnings = [];
+
+      if (settings.dynamicAttachments === "yes") {
+        notes.push("Because the form uses dynamic data attachments, configure automatic form updates so devices can retrieve updated attachment data during data collection.");
+      }
+
+      if (settings.frequentChanges === "notSure") {
+        notes.push("Because you are not sure whether the form will change during data collection, Previously downloaded forms only is recommended as a flexible default.");
+      }
+
+      if (autoUpdatesNeeded) {
+        if (settings.allForms === "yes") {
+          blankFormUpdateMode = "Exactly match server";
+          automaticDownload = "Enabled automatically";
+          notes.push("All forms shared with the account will be downloaded and updated automatically on the device.");
+        } else {
+          blankFormUpdateMode = "Previously downloaded forms only";
+          automaticDownload = settings.automaticDownload === "yes" ? "Enabled" : "Disabled";
+          if (settings.automaticDownload === "no") {
+            notes.push("Users will be notified when updates are available, but updates will not download automatically.");
+          }
+        }
+
+        if (settings.dynamicAttachments === "yes") {
+          automaticUpdateFrequency = settings.batteryConcern === "yes" ? "Every 24 hours" : "Every 6 hours";
+          if (settings.batteryConcern === "yes") {
+            notes.push("A less frequent update schedule is recommended because battery life is a concern. If dynamic data attachments change more often than once per day, use a shorter update interval during active data collection.");
+          }
+        } else if (settings.batteryConcern === "yes") {
+          automaticUpdateFrequency = "Every 24 hours";
+        } else if (settings.frequentChanges === "yes") {
+          automaticUpdateFrequency = "Every 6 or 12 hours";
+        } else {
+          automaticUpdateFrequency = "Every 12 or 24 hours";
+        }
+      }
+
+      const autoSend = settings.autoSend;
+      const deleteAfterSend = settings.deleteAfterSend === "yes" ? "Enabled" : "Disabled";
+      const language = settings.specificLanguage === "yes" ? "Set the app interface language to the enumerators’ preferred language" : "Use the device language";
+      const deleteFormAccess = settings.preventDeleteForms === "yes" ? "Hide or disable Delete form" : "Leave Delete form visible";
+      const userSettingsAccess = settings.restrictSettings === "yes" ? "Disable settings that enumerators should not change" : "Leave settings accessible";
+      const adminPassword = (settings.restrictSettings === "yes" || settings.preventDeleteForms === "yes") ? "Set an admin password" : "Optional";
+
+      if (settings.preventDeleteForms === "yes" && settings.restrictSettings === "no") {
+        warnings.push("If you hide Delete form but leave settings accessible, enumerators may be able to change restricted settings. Consider restricting project settings and setting an admin password.");
+      }
+
+      if (settings.restrictSettings === "yes") {
+        notes.push("After configuring Access control, set an admin password so enumerators cannot re-enable restricted options or change protected settings in the field.");
+      }
+
+      if (settings.deleteAfterSend === "yes") {
+        notes.push("Delete after send can help save space and protect data privacy. Use this especially for shared devices, sensitive data, or devices at risk of being lost.");
+      } else {
+        notes.push("Keeping submitted data on the device can be useful if supervisors need to review sent submissions directly in KoboCollect. Note that once forms are sent, the data can only be viewed on the device, not edited.");
+      }
+
+      return {
+        blankFormUpdateMode,
+        automaticDownload,
+        automaticUpdateFrequency,
+        autoSend: LABELS.autoSend[autoSend],
+        deleteAfterSend,
+        language,
+        deleteFormAccess,
+        userSettingsAccess,
+        adminPassword,
+        notes,
+        warnings
+      };
+    }
+
+    function renderRecommendations(settings) {
+      const recommendations = determineRecommendations(settings);
+      const summary = document.getElementById("summary");
+      const output = document.getElementById("recommendationsOutput");
+
+      const autoUpdatesNeeded = needsAutomaticUpdates(settings);
+      const batteryLabel = autoUpdatesNeeded ? LABELS.batteryConcern[settings.batteryConcern] : LABELS.batteryConcern.notApplicable;
+      const allFormsLabel = autoUpdatesNeeded ? LABELS.allForms[settings.allForms] : LABELS.allForms.notApplicable;
+      const automaticDownloadLabel = autoUpdatesNeeded && settings.allForms === "no" ? LABELS.automaticDownload[settings.automaticDownload] : LABELS.automaticDownload.notApplicable;
+
+      summary.innerHTML = `
+        <h2>Selected project context</h2>
+        <ul>
+          <li><strong>Frequent form changes:</strong> ${LABELS.frequentChanges[settings.frequentChanges]}</li>
+          <li><strong>Dynamic data attachments:</strong> ${LABELS.dynamicAttachments[settings.dynamicAttachments]}</li>
+          <li><strong>Battery concern:</strong> ${batteryLabel}</li>
+          <li><strong>Automatically download all shared forms:</strong> ${allFormsLabel}</li>
+          <li><strong>Automatic download for previously downloaded forms:</strong> ${automaticDownloadLabel}</li>
+          <li><strong>Auto send:</strong> ${LABELS.autoSend[settings.autoSend]}</li>
+          <li><strong>Delete after send:</strong> ${LABELS.deleteAfterSend[settings.deleteAfterSend]}</li>
+          <li><strong>App interface language:</strong> ${LABELS.specificLanguage[settings.specificLanguage]}</li>
+          <li><strong>Delete form access:</strong> ${LABELS.preventDeleteForms[settings.preventDeleteForms]}</li>
+          <li><strong>Project settings access:</strong> ${LABELS.restrictSettings[settings.restrictSettings]}</li>
+        </ul>
+      `;
+
+      const warningsHtml = recommendations.warnings.length ? `
+        <div class="notice warning">
+          <strong>Check this configuration:</strong>
+          <ul>${recommendations.warnings.map(warning => `<li>${warning}</li>`).join("")}</ul>
+        </div>
+      ` : "";
+
+      const notesHtml = recommendations.notes.length ? `
+        <div class="notice info">
+          <strong>Notes:</strong>
+          <ul>${recommendations.notes.map(note => `<li>${note}</li>`).join("")}</ul>
+        </div>
+      ` : "";
+
+      output.innerHTML = `
+        <h2>Recommended KoboCollect settings</h2>
+        ${warningsHtml}
+
+        <section class="section">
+          <h3>Form management settings</h3>
+          <table class="recommendation-table">
+            <tr>
+              <th>Blank form update mode</th>
+              <td>${recommendations.blankFormUpdateMode}</td>
+            </tr>
+            <tr>
+              <th>Automatic download</th>
+              <td>${recommendations.automaticDownload}</td>
+            </tr>
+            <tr>
+              <th>Automatic update frequency</th>
+              <td>${recommendations.automaticUpdateFrequency}</td>
+            </tr>
+            <tr>
+              <th>Auto send</th>
+              <td>${recommendations.autoSend}</td>
+            </tr>
+            <tr>
+              <th>Delete after send</th>
+              <td>${recommendations.deleteAfterSend}</td>
+            </tr>
+          </table>
+          <p><strong>Where to enable:</strong> KoboCollect → Project icon → Settings → Form management.</p>
+          <p><strong>Learn more:</strong> <a href="https://support.kobotoolbox.org/kobocollect_settings.html#form-management-settings" target="_blank" rel="noopener noreferrer">Form management settings</a></p>
+        </section>
+
+        <section class="section">
+          <h3>User interface settings</h3>
+          <table class="recommendation-table">
+            <tr>
+              <th>Language</th>
+              <td>${recommendations.language}</td>
+            </tr>
+          </table>
+          <p><strong>Where to enable:</strong> KoboCollect → Project icon → Settings → User interface → Language.</p>
+          <p><strong>Important:</strong> This changes the KoboCollect app interface language only. It does not change the form language. If the form has multiple languages, enumerators select the form language during data entry.</p>
+          <p><strong>Learn more:</strong> <a href="https://support.kobotoolbox.org/kobocollect_settings.html#user-interface-settings" target="_blank" rel="noopener noreferrer">User interface settings</a></p>
+        </section>
+
+        <section class="section">
+          <h3>Access control</h3>
+          <table class="recommendation-table">
+            <tr>
+              <th>Main Menu Settings &gt; Delete form</th>
+              <td>${recommendations.deleteFormAccess}</td>
+            </tr>
+            <tr>
+              <th>User Settings</th>
+              <td>${recommendations.userSettingsAccess}</td>
+            </tr>
+          </table>
+          <p><strong>Where to enable:</strong> KoboCollect → Project icon → Settings → Access control.</p>
+          <p><strong>Learn more:</strong> <a href="https://support.kobotoolbox.org/kobocollect_settings.html#access-control" target="_blank" rel="noopener noreferrer">Access control</a></p>
+        </section>
+
+        <section class="section">
+          <h3>Set admin password</h3>
+          <table class="recommendation-table">
+            <tr>
+              <th>Admin password</th>
+              <td>${recommendations.adminPassword}</td>
+            </tr>
+          </table>
+          <p><strong>Where to enable:</strong> KoboCollect → Project icon → Settings → Set admin password.</p>
+          <p><strong>Learn more:</strong> <a href="https://support.kobotoolbox.org/kobocollect_settings.html#set-admin-password" target="_blank" rel="noopener noreferrer">Set admin password</a></p>
+        </section>
+
+        ${notesHtml}
+
+        <section class="section">
+          <h3>Suggested default recommendation</h3>
+          <p>For most field data collection projects where forms may change during data collection, submissions should be uploaded regularly, and enumerators should not modify project settings, use:</p>
+          <ul>
+            <li><strong>Blank form update mode:</strong> Previously downloaded forms only</li>
+            <li><strong>Automatic download:</strong> Enabled</li>
+            <li><strong>Automatic update frequency:</strong> Daily, hourly, or more frequently during active form testing</li>
+            <li><strong>Auto send:</strong> Wi-Fi or cellular</li>
+            <li><strong>Delete after send:</strong> Enabled for sensitive data or shared devices</li>
+            <li><strong>Language:</strong> Set to the enumerators’ preferred KoboCollect interface language</li>
+            <li><strong>Delete form:</strong> Hidden from enumerators</li>
+            <li><strong>Access control:</strong> Enabled for relevant menu and settings options</li>
+            <li><strong>Admin password:</strong> Enabled</li>
+          </ul>
+        </section>
+      `;
+
+      document.getElementById("summaryCard").classList.remove("hidden");
+      document.getElementById("resultCard").classList.remove("hidden");
+      document.getElementById("copyStatus").classList.add("hidden");
+      document.getElementById("summaryCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function getPlainTextRecommendations() {
+      const output = document.getElementById("recommendationsOutput");
+      return output.innerText.trim();
+    }
+
+    const form = document.getElementById("settingsForm");
+
+    form.addEventListener("change", event => {
+      if (["frequentChanges", "dynamicAttachments", "allForms"].includes(event.target.name)) {
+        updateConditionalQuestions();
+      }
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const settings = {
+        frequentChanges: getSelectedValue(form, "frequentChanges"),
+        dynamicAttachments: getSelectedValue(form, "dynamicAttachments"),
+        batteryConcern: getSelectedValue(form, "batteryConcern"),
+        allForms: getSelectedValue(form, "allForms"),
+        automaticDownload: getSelectedValue(form, "automaticDownload"),
+        autoSend: getSelectedValue(form, "autoSend"),
+        deleteAfterSend: getSelectedValue(form, "deleteAfterSend"),
+        specificLanguage: getSelectedValue(form, "specificLanguage"),
+        preventDeleteForms: getSelectedValue(form, "preventDeleteForms"),
+        restrictSettings: getSelectedValue(form, "restrictSettings")
+      };
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      renderRecommendations(settings);
+    });
+
+    document.getElementById("resetButton").addEventListener("click", () => {
+      form.reset();
+      document.getElementById("batteryQuestion").classList.add("hidden");
+      document.getElementById("allFormsQuestion").classList.add("hidden");
+      document.getElementById("automaticDownloadQuestion").classList.add("hidden");
+      document.getElementById("summaryCard").classList.add("hidden");
+      document.getElementById("resultCard").classList.add("hidden");
+      setRequiredForGroup("batteryConcern", false);
+      setRequiredForGroup("allForms", false);
+      setRequiredForGroup("automaticDownload", false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.getElementById("copyButton").addEventListener("click", async () => {
+      const text = getPlainTextRecommendations();
+      const copyStatus = document.getElementById("copyStatus");
+
+      try {
+        await navigator.clipboard.writeText(text);
+        copyStatus.classList.remove("hidden");
+        setTimeout(() => copyStatus.classList.add("hidden"), 2500);
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        copyStatus.classList.remove("hidden");
+        setTimeout(() => copyStatus.classList.add("hidden"), 2500);
+      }
+    });
+
+    document.getElementById("printButton").addEventListener("click", () => {
+      window.print();
+    });
+
+    setRequiredForGroup("batteryConcern", false);
+    setRequiredForGroup("allForms", false);
+    setRequiredForGroup("automaticDownload", false);
+  </script>
+</body>
+</html>
