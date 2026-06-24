@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KoboCollect Project Settings Generator</title>
+  <meta name="title" content="KoboCollect Project Settings Generator" />
+  <script>document.title = "KoboCollect Project Settings Generator";</script>
   <meta name="description" content="Answer a few questions to generate recommended KoboCollect settings for project administrators." />
   <meta name="application-name" content="KoboCollect Project Settings Generator" />
   <meta name="apple-mobile-web-app-title" content="KoboCollect Settings Generator" />
@@ -467,7 +469,7 @@
       <article id="recommendationsOutput" class="instructions"></article>
     </section>
 
-    <section class="card qr-card">
+    <section id="qrCard" class="card qr-card hidden">
       <h2>Configure additional devices</h2>
       <p>Once you have configured these settings for one device, you can generate a QR code to copy the same server settings and project configuration to other devices.</p>
 
@@ -504,6 +506,10 @@
         <li>
           <a href="https://support.kobotoolbox.org/data_collection_kobocollect.html" target="_blank" rel="noopener noreferrer">Collecting data using KoboCollect</a>
           – Learn how to download forms, collect data offline, edit drafts, and submit completed forms.
+        </li>
+        <li>
+          <a href="https://support.kobotoolbox.org/kobocollect_on_android_latest.html" target="_blank" rel="noopener noreferrer">Setting up the KoboCollect app</a>
+          – Learn how to install and configure KoboCollect, including how to use a QR code to copy settings to additional devices.
         </li>
       </ul>
     </section>
@@ -826,6 +832,7 @@
       `;
 
       document.getElementById("resultCard").classList.remove("hidden");
+      document.getElementById("qrCard").classList.remove("hidden");
       document.getElementById("copyStatus").classList.add("hidden");
       document.getElementById("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -874,6 +881,7 @@
       document.getElementById("allFormsQuestion").classList.add("hidden");
       document.getElementById("automaticDownloadQuestion").classList.add("hidden");
       document.getElementById("resultCard").classList.add("hidden");
+      document.getElementById("qrCard").classList.add("hidden");
       setRequiredForGroup("dynamicAttachments", false);
       setRequiredForGroup("batteryConcern", false);
       setRequiredForGroup("allForms", false);
