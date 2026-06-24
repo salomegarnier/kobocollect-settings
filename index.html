@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KoboCollect Project Settings Generator</title>
+  <meta name="description" content="Answer a few questions to generate recommended KoboCollect settings for project administrators." />
+  <meta name="application-name" content="KoboCollect Project Settings Generator" />
+  <meta name="apple-mobile-web-app-title" content="KoboCollect Settings Generator" />
+  <meta property="og:title" content="KoboCollect Project Settings Generator" />
+  <meta property="og:description" content="Generate recommended KoboCollect project settings for data collection." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="KoboCollect Project Settings Generator" />
+  <meta name="twitter:description" content="Generate recommended KoboCollect project settings for data collection." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231B6DB5'/%3E%3Cpath d='M18 33l9 9 19-22' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style>
     :root {
       --bg: #F0F4FA;
@@ -459,7 +469,28 @@
 
     <section class="card qr-card">
       <h2>Configure additional devices</h2>
-      <p>Once you have configured these settings for one device, you can generate a QR code to copy the configuration over to other devices.</p>
+      <p>Once you have configured these settings for one device, you can generate a QR code to copy the same server settings and project configuration to other devices.</p>
+
+      <h3>Generate the QR code from the configured device</h3>
+      <ol>
+        <li>Open the <strong>Projects</strong> menu and select the project you want to copy.</li>
+        <li>Tap <strong>Settings</strong>.</li>
+        <li>Select <strong>Project Management</strong>.</li>
+        <li>Tap <strong>Reconfigure with QR Code</strong>.</li>
+        <li>Choose <strong>QR Code</strong>. The QR code will appear on the screen.</li>
+        <li>Take a screenshot of the QR code, or return to this menu later to access it again.</li>
+      </ol>
+
+      <h3>Configure another device with the QR code</h3>
+      <ol>
+        <li>Open KoboCollect on the device you want to configure.</li>
+        <li>Tap <strong>Configure with QR Code</strong>.</li>
+        <li>Scan the QR code with the device camera, or tap the three dots icon in the top right corner and select <strong>Import QR code</strong> to use a saved screenshot.</li>
+      </ol>
+
+      <div class="notice warning">
+        <strong>Important:</strong> The QR code contains the account credentials and access permissions for the account used to generate it. To configure enumerator devices, generate the QR code from an account that only has the permissions enumerators need.
+      </div>
     </section>
 
     <section class="card learn-more-card">
@@ -478,9 +509,6 @@
     </section>
   </main>
 
-  <footer>
-    This tool provides general recommendations. Always test your KoboCollect configuration before starting field data collection.
-  </footer>
 
   <script>
     const LABELS = {
@@ -716,13 +744,6 @@
         </div>
       ` : "";
 
-      const notesHtml = recommendations.notes.length ? `
-        <div class="notice info">
-          <strong>Notes:</strong>
-          <ul>${recommendations.notes.map(note => `<li>${note}</li>`).join("")}</ul>
-        </div>
-      ` : "";
-
       const userInterfaceHtml = showUserInterface ? `
         <section class="section">
           <h3>User interface settings</h3>
@@ -802,7 +823,6 @@
 
         ${userInterfaceHtml}
         ${accessControlHtml}
-        ${notesHtml}
       `;
 
       document.getElementById("resultCard").classList.remove("hidden");
